@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5f1">
+  <title>Notes — a little space for your thoughts</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #252a26;
+      --muted: #777d75;
+      --paper: #fffefa;
+      --canvas: #f6f5f1;
+      --line: #e8e7df;
+      --green: #355d4d;
+      --green-dark: #294a3d;
+      --green-pale: #e9f0e9;
+      --rose-pale: #f7eeea;
+      --shadow: 0 18px 50px rgb(42 50 42 / 7%);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 12% 0%, rgb(228 236 225 / 55%), transparent 34rem),
+        var(--canvas);
+      color: var(--ink);
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; }
+
+    .page { width: min(100% - 40px, 1040px); margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      min-height: 88px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgb(37 42 38 / 9%);
+    }
+
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--green);
+      color: white;
+      font-family: Georgia, serif;
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 1;
+      transform: rotate(-4deg);
+    }
+    .brand-name { font-size: 16px; font-weight: 750; letter-spacing: -.03em; }
+    .topbar-note { color: var(--muted); font-size: 13px; }
+
+    main { padding: 54px 0 72px; }
+    .intro { max-width: 650px; margin-bottom: 32px; }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(40px, 6vw, 62px);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: 1.08;
+    }
+    .intro-copy { max-width: 440px; margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+
+    .composer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 15px 20px;
+      align-items: end;
+      margin-bottom: 48px;
+      padding: 25px;
+      border: 1px solid rgb(53 93 77 / 11%);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s ease, transform .2s ease;
+    }
+    .composer:focus-within { box-shadow: 0 20px 55px rgb(42 50 42 / 11%), 0 0 0 3px rgb(53 93 77 / 9%); }
+    .field { min-width: 0; }
+    .field-title { grid-column: 1 / -1; }
+    label { display: block; margin-bottom: 7px; color: #555d55; font-size: 12px; font-weight: 750; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      outline: none;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    input { height: 46px; padding: 0 13px; }
+    textarea { min-height: 93px; padding: 11px 13px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: #a4a69e; }
+    input:focus, textarea:focus { border-color: #628674; box-shadow: 0 0 0 3px rgb(53 93 77 / 11%); background: #fff; }
+    button, .export-link {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 11px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+    button:focus-visible, a:focus-visible { outline: 3px solid #91b5a0; outline-offset: 3px; }
+    .add-button { width: 100%; padding: 0 17px; background: var(--green); color: white; }
+    .add-button:hover { transform: translateY(-2px); background: var(--green-dark); box-shadow: 0 7px 16px rgb(53 93 77 / 20%); }
+    .add-button span { font-size: 19px; font-weight: 400; line-height: 1; }
+
+    .notes-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 17px;
+    }
+    .notes-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 29px;
+      font-weight: 500;
+      letter-spacing: -.035em;
+      line-height: 1.2;
+    }
+    .count {
+      display: inline-flex;
+      min-width: 27px;
+      height: 25px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-radius: 99px;
+      background: var(--green-pale);
+      color: var(--green);
+      font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+    }
+    .export-link { min-height: 38px; padding: 0 12px; color: var(--green); font-size: 13px; }
+    .export-link:hover { background: var(--green-pale); transform: translateY(-1px); }
+    .export-link svg { width: 16px; height: 16px; }
+
+    .notes-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+    .note {
+      position: relative;
+      display: flex;
+      min-height: 174px;
+      flex-direction: column;
+      padding: 20px 20px 15px;
+      overflow-wrap: anywhere;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--paper);
+      box-shadow: 0 3px 12px rgb(42 50 42 / 3%);
+      animation: note-arrive .35s ease both;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .note:hover { transform: translateY(-3px); border-color: #d3ded4; box-shadow: 0 12px 25px rgb(42 50 42 / 8%); }
+    .note h3 { margin: 0 35px 9px 0; font-family: Georgia, "Times New Roman", serif; font-size: 20px; font-weight: 600; letter-spacing: -.025em; line-height: 1.3; }
+    .note-content { flex: 1; color: #666d65; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .delete-form { position: absolute; top: 13px; right: 13px; margin: 0; }
+    .delete-button {
+      width: 32px;
+      min-height: 32px;
+      padding: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #92978f;
+      font-size: 18px;
+      font-weight: 400;
+      opacity: .7;
+    }
+    .delete-button:hover { transform: rotate(4deg); background: var(--rose-pale); color: #9c5548; opacity: 1; }
+    .empty-state {
+      padding: 43px 20px;
+      border: 1px dashed #d4d9d0;
+      border-radius: 15px;
+      background: rgb(255 254 250 / 65%);
+      text-align: center;
+    }
+    .empty-icon { display: grid; width: 48px; height: 48px; margin: 0 auto 13px; place-items: center; border-radius: 16px; background: var(--green-pale); color: var(--green); font-family: Georgia, serif; font-size: 26px; }
+    .empty-state h3 { margin: 0; font-family: Georgia, serif; font-size: 20px; font-weight: 600; }
+    .empty-state p { margin: 5px 0 0; color: var(--muted); font-size: 14px; }
+    footer { padding: 20px 0 30px; border-top: 1px solid rgb(37 42 38 / 9%); color: #969a92; font-size: 12px; text-align: center; }
+
+    @keyframes note-arrive {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 28px, 1040px); }
+      .topbar { min-height: 70px; }
+      .topbar-note { font-size: 11px; }
+      main { padding: 39px 0 54px; }
+      .intro { margin-bottom: 25px; }
+      .composer { grid-template-columns: 1fr; gap: 13px; margin-bottom: 38px; padding: 18px; border-radius: 16px; }
+      .field-title { grid-column: auto; }
+      .notes-grid { grid-template-columns: 1fr; gap: 12px; }
+      .note { min-height: 150px; }
+      .notes-title { font-size: 25px; }
+      .export-link { padding: 0 7px; font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Notes home">
+        <span class="brand-mark" aria-hidden="true">n</span>
+        <span class="brand-name">little notes</span>
+      </a>
+      <span class="topbar-note">A little space for your thoughts</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Your personal notebook</p>
+        <h1 id="page-title">Thoughts, kept close.</h1>
+        <p class="intro-copy">A quiet place to save the little things you don't want to forget.</p>
+      </section>
+
+      <form class="composer" method="post">
+        <div class="field field-title">
+          <label for="title">Give your note a title</label>
+          <input id="title" name="title" placeholder="A thought to keep..." maxlength="200" required>
+        </div>
+        <div class="field">
+          <label for="content">What's on your mind?</label>
+          <textarea id="content" name="content" placeholder="Write it down, get it out..." required></textarea>
+        </div>
+        <button class="add-button" type="submit"><span aria-hidden="true">+</span> Save note</button>
+      </form>
+
+      <section aria-labelledby="notes-title">
+        <div class="notes-heading">
+          <h2 class="notes-title" id="notes-title">Your notes <span class="count">{{ notes|length }}</span></h2>
+          <a class="export-link" href="{{ url_for('export_notes') }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v12m0 0 4-4m-4 4-4-4"></path><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"></path>
+            </svg>
+            Download PDF
+          </a>
+        </div>
+
+        {% if notes %}
+          <div class="notes-grid">
+            {% for note in notes %}
+              <article class="note">
+                <h3>{{ note.title }}</h3>
+                <div class="note-content">{{ note.content }}</div>
+                <form class="delete-form" method="post" action="{{ url_for('delete_note', note_id=note.id) }}">
+                  <button class="delete-button" type="submit" aria-label="Delete {{ note.title }}" title="Delete note">×</button>
+                </form>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">✎</span>
+            <h3>Your notebook is all yours.</h3>
+            <p>Add your first note above and it'll be waiting here.</p>
+          </div>
+        {% endif %}
+      </section>
+    </main>
+    <footer>Made for the thoughts worth keeping.</footer>
+  </div>
+</body>
+</html>
